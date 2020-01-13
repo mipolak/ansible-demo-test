@@ -5,7 +5,7 @@
     daemon_reload: yes
     become: yes
 
-- name: reload_httpd
+- name: restart_httpd
   systemd:
     name: http
     state: restarted
