@@ -1,0 +1,40 @@
+---
+- name: logical volume    
+  lvol:
+    vg: "{{ vgname }}"
+    lv: "{{ lvname }}"
+    size: 512m
+
+- name: XFS file system exists on /dev/{{ vgname }}/{{ lvname }}    
+  filesystem:      
+    dev: /dev/{{ vgname }}/{{ lvname }}      
+    fstype: xfs      
+    force: no
+    
+- name: mount point exists
+  file:
+    path: '{{ fs_mountpoint }}'      
+    state: directory
+ 
+- name:  lv {{ lvname }} is mounted on fs_mountpoint    
+  mount:      
+    name: '{{ fs_mountpoint }}'      
+    src: /dev/{{ vgname }}/{{ lvname }}      
+    fstype: xfs      
+    state: mounted      
+    dump: '1'      
+    passno: '2'    
+    
+- name: Make sure permissions on mounted fs are correct    
+  file:      
+    path: '{{ fs_mountpoint }}'      
+    owner: root      
+    group: root      
+    mode: '0777'      
+    state: directory
+    
+- name: Copy testfile to the mountpoint    
+  copy:      
+    dest: '{{ fs_mountpoint }}/TESTFILE'      
+    content: "TESTFILE at {{ ansible_fqdn }}\n"
+  

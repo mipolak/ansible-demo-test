@@ -1,7 +1,8 @@
 ---
 - hosts: all 
-  remote_user: user
+  remote_user: devops
   become: yes
   become_method: sudo
   roles:
+    - ux-test
     - demo-test

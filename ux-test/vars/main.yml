@@ -1,2 +1,13 @@
 ---
 # vars file for ux-test
+newusers:
+  - name: demouser1
+    pw: rhel2020
+  - name: demouser2
+    pw: centos2020
+  - name: demouser3
+    pw: ubuntu2020
+
+fs_mountpoint: /testdrive
+vgname: centos_master
+lvname: lv_test
