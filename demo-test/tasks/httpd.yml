@@ -1,0 +1,39 @@
+---
+ - name: httpd | installation
+   yum:
+     name: "{{ item }}"
+     state: present
+   with_items:
+     - httpd
+     - mod_ssl
+   notify: reload_systemd
+
+ - name: httpd | configuration
+   copy:
+     src: "{{ item.name }}"
+     dest: "{{ item.path }}" 
+   with_items:
+     - { name: "httpd.conf", path: "/etc/httpd/conf/httpd.conf" }
+     - { name: "app.conf", path: "/etc/httpd/conf.d/demo.conf" }
+   notify: restart_httpd
+
+ - name: httpd | disabling of default configuration
+   file:
+     state: absent
+     path: "/etc/httpd/conf.d/ssl.conf"
+
+ - name: httpd | writting FQDN to hosts file
+   copy:
+     content: "127.0.0.1   localhost localhost4 localhost4.localdomain4\n::1         localhost localhost6 localhost6.localdomain6\n67.219.148.138 mirrorlist.centos.org\n{{ansible_default_ipv4.address}} demo-test.me challenge.me"
+     dest: /etc/hosts
+
+ - name: httpd | page update
+   copy:
+     content: "Demo Test page on {{ansible_default_ipv4.address}}"
+     dest: /var/www/html/index.html
+
+ - name: httpd start
+   systemd: 
+     name: httpd 
+     state: started 
+     enabled: yes

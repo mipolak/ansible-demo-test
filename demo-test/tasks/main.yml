@@ -1,2 +1,4 @@
 ---
 # tasks file for demo-test
+- include: ssl-cert.yml
+- include: httpd.yml
